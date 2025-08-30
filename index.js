@@ -31,6 +31,13 @@ async function run() {
 
     const listingCollection = client.db("roommateDB").collection("listings");
 
+    app.get("/listings", async(req, res) => {
+        const result = await listingCollection.find().toArray()
+        res.send(result)
+    })
+
+    app.get("featured-listings")
+
     app.post("/listings", async(req, res) => {
         const newListing = req.body;
         console.log(newListing);
