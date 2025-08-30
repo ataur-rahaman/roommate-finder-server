@@ -32,7 +32,9 @@ async function run() {
     const listingCollection = client.db("roommateDB").collection("listings");
 
     app.get("/listings", async(req, res) => {
-        const result = await listingCollection.find().toArray()
+        const email = req.query.email;
+        const query = email ? {userEmail: email} : {};
+        const result = await listingCollection.find(query).toArray()
         res.send(result)
     })
 
