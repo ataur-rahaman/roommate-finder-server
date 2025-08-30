@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -36,7 +36,17 @@ async function run() {
         res.send(result)
     })
 
-    app.get("featured-listings")
+    app.get("/featured-listings", async(req, res) => {
+        const result = await listingCollection.find({availability: "Available"}).limit(6).toArray();
+        res.send(result)
+    })
+
+    app.get("/listings/:id", async(req, res) => {
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)};
+        const result = await listingCollection.findOne(query);
+        res.send(result);
+    })
 
     app.post("/listings", async(req, res) => {
         const newListing = req.body;
