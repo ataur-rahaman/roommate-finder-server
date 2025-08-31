@@ -31,9 +31,14 @@ async function run() {
 
     const listingCollection = client.db("roommateDB").collection("listings");
 
+    app.get("/all-listings", async(req, res) => {
+        const result = await listingCollection.find().toArray()
+        res.send(result)
+    })
+
     app.get("/listings", async(req, res) => {
         const email = req.query.email;
-        const query = email ? {userEmail: email} : {};
+        const query = {userEmail: email};
         const result = await listingCollection.find(query).toArray()
         res.send(result)
     })
@@ -55,6 +60,18 @@ async function run() {
         console.log(newListing);
         const result = await listingCollection.insertOne(newListing);
         res.send(result)
+    })
+
+    app.put("listings/:id", async(req, res) => {
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)};
+      const updatedListing = req.body;
+      const updatedDoc = {
+        $set: updatedListing
+      };
+
+      const result = await listingCollection.updateOne(filter, updatedDoc);
+      res.send(result);
     })
 
     // Send a ping to confirm a successful connection
