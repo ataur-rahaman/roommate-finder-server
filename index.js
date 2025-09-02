@@ -30,6 +30,7 @@ async function run() {
     await client.connect();
 
     const listingCollection = client.db("roommateDB").collection("listings");
+    const likeCollection = client.db("roommateDB").collection("likes");
 
     app.get("/all-listings", async(req, res) => {
         const result = await listingCollection.find().toArray()
@@ -60,6 +61,12 @@ async function run() {
         console.log(newListing);
         const result = await listingCollection.insertOne(newListing);
         res.send(result)
+    })
+
+    app.post("/likes", async(req, res) => {
+      const newLike = req.body;
+      const result = await likeCollection.insertOne(newLike);
+      res.send(result);
     })
 
     app.delete("/listings/:id", async(req, res) => {
