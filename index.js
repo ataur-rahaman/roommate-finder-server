@@ -56,6 +56,26 @@ async function run() {
         res.send(result);
     })
 
+    app.get("/check-like", async(req, res) => {
+      const {likerEmail, thisId} = req.query;
+      const query = {likerEmail, thisId};
+      const result = await likeCollection.findOne(query);
+      if(!result){
+        return res.send({likerEmail: "", thisId: ""})
+      }
+      else{
+        res.send(result);
+      }
+      
+    })
+
+    app.get("/likes/count", async(req, res) => {
+      const id = req.query.thisId;
+      const query = {thisId: id};
+      const count = await likeCollection.countDocuments(query)
+      res.send({count});
+    })
+
     app.post("/listings", async(req, res) => {
         const newListing = req.body;
         console.log(newListing);
